@@ -77,16 +77,17 @@ function maker(eletype = "div") {
 }
 
 function updatePos() {
-  if (keyz.ArrowLeft) {
+  if (keyz.ArrowLeft && game.posX > dim.left) {
     box.game.moveX(-game.speed);
   }
-  if (keyz.ArrowRight) {
+
+  if (keyz.ArrowRight && game.posX < dim.right - game.size - game.speed) {
     box.game.moveX(game.speed);
   }
-  if (keyz.ArrowUp) {
+  if (keyz.ArrowUp && game.posY > dim.top) {
     box.game.moveY(-game.speed);
   }
-  if (keyz.ArrowDown) {
+  if (keyz.ArrowDown && game.posY < dim.bottom - game.size - game.speed) {
     box.game.moveY(game.speed);
   }
 
@@ -96,6 +97,7 @@ function updatePos() {
   if (randNumb(0, 40) == 10 && game.max > enemies.length) {
     const newEle = maker();
   }
+
   enemies.forEach((enemy) => {
     let x = enemy.offsetLeft;
     let y = enemy.offsetTop;

@@ -1,8 +1,10 @@
 const gameBox = document.querySelector(".Gamebox");
 const box = document.querySelector(".box");
 const h1maker = document.querySelector("h1");
+const score = document.querySelector(".score");
 const dim = gameBox.getBoundingClientRect();
 let enemies = [];
+
 const keyz = {
   ArrowLeft: false,
   ArrowRight: false,
@@ -17,6 +19,8 @@ const game = {
   speed: 10,
   counter: 0,
   max: 10,
+  speedRange: [2, 8],
+  score: 0,
 };
 
 box.style.position = "absolute";
@@ -55,6 +59,20 @@ function randNumb(min = 0, max = 256) {
 function getColor(op = 0.8) {
   return `rgba(${randNumb()},${randNumb()},${randNumb()},${op})`;
 }
+function updatescore(value) {
+  score.textContent = `${value}`;
+}
+function isCol(Rect, circ) {
+  let a = Rect.getBoundingClientRect();
+  let b = circ.getBoundingClientRect();
+
+  let xAxis = a.right < b.left || a.left > b.right;
+  let yAxis = a.bottom < b.top || a.top > b.bottom;
+
+  let overTop = !(xAxis || yAxis);
+
+  return overTop;
+}
 
 function maker(eletype = "div") {
   game.counter++;
@@ -71,8 +89,12 @@ function maker(eletype = "div") {
   const ele1 = gameBox.append(ele);
   console.log(ele1);*/
   enemies.push(ele);
-  ele.dirX = randNumb(1, 8);
+  ele.dirX = randNumb(...game.speedRange);
   ele.style.backgroundColor = getColor((op = 0.8));
+
+  ele.addEventListener("click", (e) => {
+    isCol(ele, box);
+  });
   return gameBox.appendChild(ele);
 }
 
@@ -98,7 +120,7 @@ function updatePos() {
     const newEle = maker();
   }
 
-  enemies.forEach((enemy) => {
+  enemies.forEach((enemy, index) => {
     let x = enemy.offsetLeft;
     let y = enemy.offsetTop;
 
@@ -107,6 +129,13 @@ function updatePos() {
     }
     x += enemy.dirX;
     enemy.style.left = x + "px";
+
+    if (isCol(enemy, box)) {
+      enemy.remove();
+      enemies.splice(index, 1);
+      game.score++;
+      updatescore(game.score);
+    }
   });
 
   move = window.requestAnimationFrame(updatePos);

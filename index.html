@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,19 +8,40 @@
     <title>Document</title>
 </head>
 <style>
-
-    h1{
+    h1 {
         color: red;
     }
 
-    .first{
+    .first {
         color: blue;
     }
-    
+
+    .Gamebox{
+        border: 1px solid black;
+        width: 600px;
+        height: 400px;
+    }
+    .enemy{
+        display: inline-block;
+        text-align: center;
+        line-height: 30px;
+        color: azure;
+        position: absolute;
+        height: 30px;
+        width: 30px;
+        background-color: blue;
+        border-radius: 360px;
+    }
 </style>
+
 <body>
-    <h1 class="first">Test</h1>
-    <h1 >Test2</h1>
-    <script src="./index.js"></script>
+    <h1 class="first">Game</h1>
+    <div class="Gamebox">
+        <div class="box">
+
+        </div>
+    </div>
+    <script src="./app.js"></script>
 </body>
+
 </html>

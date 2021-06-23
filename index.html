@@ -18,19 +18,30 @@
 
     .Gamebox{
         border: 1px solid black;
-        width: 600px;
-        height: 400px;
+        width: 90vw;
+        height: 50vh;
+        background-color: black;
     }
     .enemy{
         display: inline-block;
+        border: 1px solid #fff;
         text-align: center;
         line-height: 30px;
-        color: azure;
+        color: azure; 
         position: absolute;
         height: 30px;
         width: 30px;
         background-color: blue;
         border-radius: 360px;
+    }
+    .timer{
+        margin-left: 25%;
+    }
+    .go{
+        margin-top: 1em;
+        margin-left: 28%;
+        padding: 1em;
+
     }
 </style>
 
@@ -41,6 +52,8 @@
 
         </div>
     </div>
+    <h1 class="timer">Timer: <span class="time">10</span>s</h1>
+    <button class="go">Start</button>
     <script src="./app.js"></script>
 </body>
 

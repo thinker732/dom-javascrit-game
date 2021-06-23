@@ -2,6 +2,8 @@ const gameBox = document.querySelector(".Gamebox");
 const box = document.querySelector(".box");
 const h1maker = document.querySelector("h1");
 const score = document.querySelector(".score");
+const time = document.querySelector(".time");
+const button = document.querySelector(".go");
 const dim = gameBox.getBoundingClientRect();
 let enemies = [];
 
@@ -13,6 +15,7 @@ const keyz = {
 };
 
 const game = {
+  timer: 10,
   size: 40,
   posX: dim.left,
   posY: dim.top,
@@ -21,6 +24,7 @@ const game = {
   max: 10,
   speedRange: [2, 8],
   score: 0,
+  status: false,
 };
 
 box.style.position = "absolute";
@@ -39,8 +43,24 @@ box.game = {
     game.posX += val;
   },
 };
+let move;
 
-let move = window.requestAnimationFrame(updatePos);
+button.addEventListener("click", (e) => {
+  game.status = !game.status;
+  if (game.status) {
+    button.textContent = "Stop";
+    move = window.requestAnimationFrame(updatePos);
+
+    let runtimer = setInterval(() => {
+      game.timer--;
+      updatetimer(game.timer);
+
+      if (game.timer == 0) clearInterval(runtimer);
+    }, 1000);
+  } else {
+    button.textContent = "Start";
+  }
+});
 
 h1maker.addEventListener("click", (event) => {
   const newElement = maker();
@@ -61,6 +81,9 @@ function getColor(op = 0.8) {
 }
 function updatescore(value) {
   score.textContent = `${value}`;
+}
+function updatetimer(value) {
+  time.textContent = `${value}`;
 }
 function isCol(Rect, circ) {
   let a = Rect.getBoundingClientRect();
@@ -137,6 +160,7 @@ function updatePos() {
       updatescore(game.score);
     }
   });
-
-  move = window.requestAnimationFrame(updatePos);
+  if (game.status && game.timer != 0) {
+    move = window.requestAnimationFrame(updatePos);
+  }
 }

@@ -8,8 +8,9 @@
     <title>Document</title>
 </head>
 <style>
-    h1 {
+    h1{
         color: red;
+        margin-left: 30%;
     }
 
     .first {
@@ -34,14 +35,19 @@
         background-color: blue;
         border-radius: 360px;
     }
-    .timer{
-        margin-left: 25%;
-    }
+    
     .go{
         margin-top: 1em;
-        margin-left: 28%;
+        margin-left: 33.33%;
         padding: 1em;
 
+    }
+    #mode{
+        position: relative;
+        width: 100px;
+        height: 30px;
+        top: -5px;
+        border-color: rgb(208, 230, 222);
     }
 </style>
 
@@ -52,7 +58,16 @@
 
         </div>
     </div>
-    <h1 class="timer">Timer: <span class="time">10</span>s</h1>
+    <h1 >Timer: <span class="time"> ... </span>s</h1>
+    <h1>Mode:
+        <select name="mode" id="mode">
+            <option value="easy">easy</option>
+            <option value="normal">normal</option>
+            <option value="difficult">difficult</option>
+            <option value="hardcore">hardcore</option>
+            <option value="asian">Asian</option>
+        </select>
+    </h1><pre class="isAsian" style="display: none;margin-left: 28%;">if you got that ref you're a GOAT</pre>
     <button class="go">Start</button>
     <script src="./app.js"></script>
 </body>

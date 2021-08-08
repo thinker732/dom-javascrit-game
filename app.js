@@ -4,7 +4,12 @@ const h1maker = document.querySelector("h1");
 const score = document.querySelector(".score");
 const time = document.querySelector(".time");
 const button = document.querySelector(".go");
+const mode = document.querySelector("#mode");
+const isAsian = document.querySelector(".isAsian");
 const dim = gameBox.getBoundingClientRect();
+
+let move;
+let runtimer;
 let enemies = [];
 
 const keyz = {
@@ -15,25 +20,19 @@ const keyz = {
 };
 
 const game = {
-  timer: 10,
-  size: 40,
+  default: 60,
+  timer: 60, //seconds
+  size: 60, //box size
   posX: dim.left,
   posY: dim.top,
-  speed: 10,
+  speed: 20, //how fast the cube/box move
   counter: 0,
-  max: 10,
-  speedRange: [2, 8],
+  max: 25, //max element(circle in gameboard)
+  speedRange: [2, 8], //speed of the box
+  display: [0, 40], //display speed of box 10 has to be in the range
   score: 0,
   status: false,
 };
-
-box.style.position = "absolute";
-box.style.border = "1px solid black";
-box.style.width = `${game.size}px`;
-box.style.height = `${game.size}px`;
-box.style.top = `${game.posY}px`;
-box.style.left = `${game.posX}px`;
-box.style.backgroundColor = "red";
 
 box.game = {
   moveY: (val = 10) => {
@@ -43,22 +42,58 @@ box.game = {
     game.posX += val;
   },
 };
-let move;
+
+(function initGame() {
+  selectMode();
+})();
+
+mode.addEventListener("change", (event) => {
+  if (mode.value == "asian") isAsian.style.display = "block";
+  else isAsian.style.display = "none";
+
+  selectMode();
+});
+
+function endGame() {
+  clearInterval(runtimer);
+  game.status = false;
+  updatetimer(0);
+  button.textContent = "Start";
+
+  while (enemies.length != 0) {
+    enemies.forEach((enemy, index) => {
+      enemy.remove();
+      enemies.splice(index, 1);
+    });
+  }
+  clearInterval(runtimer);
+}
+
+function startGame() {
+  button.textContent = "Stop";
+  move = window.requestAnimationFrame(updatePos);
+  game.timer = game.default;
+  updatetimer(game.timer);
+  game.score = 0;
+  updatescore(game.score);
+}
 
 button.addEventListener("click", (e) => {
   game.status = !game.status;
-  if (game.status) {
-    button.textContent = "Stop";
-    move = window.requestAnimationFrame(updatePos);
 
-    let runtimer = setInterval(() => {
+  if (game.status) {
+    startGame();
+    runtimer = setInterval(() => {
       game.timer--;
       updatetimer(game.timer);
 
-      if (game.timer == 0) clearInterval(runtimer);
+      setTimeout(() => {
+        clearInterval(runtimer);
+      }, 1000 * game.timer);
     }, 1000);
   } else {
-    button.textContent = "Start";
+    endGame();
+    clearInterval(runtimer);
   }
 });
 
@@ -72,6 +107,72 @@ document.addEventListener("keydown", (event) => {
 document.addEventListener("keyup", (event) => {
   if (event.code in keyz) keyz[event.code] = false;
 });
+function selectMode() {
+  switch (mode.value) {
+    case "easy":
+      game.default = 60;
+      game.timer = game.default;
+      updatetimer(game.timer);
+      game.size = 60;
+      game.speed = 20;
+      game.max = 25;
+      game.speedRange = [2, 5];
+      game.display = [9, 11];
+      break;
+    case "normal":
+      game.default = 30;
+      game.timer = game.default;
+      updatetimer(game.timer);
+      game.size = 50;
+      game.speed = 15;
+      game.max = 20;
+      game.speedRange = [2, 7];
+      game.display = [0, 30];
+      break;
+    case "difficult":
+      game.default = 20;
+      game.timer = game.default;
+      updatetimer(game.timer);
+      game.size = 40;
+      game.speed = 10;
+      game.max = 10;
+      game.speedRange = [8, 10];
+      game.display = [0, 40];
+      break;
+    case "hardcore":
+      game.default = 10;
+      game.timer = game.default;
+      updatetimer(game.timer);
+      game.size = 20;
+      game.speed = 2;
+      game.max = 5;
+      game.speedRange = [15, 20];
+      game.display = [0, 100];
+      break;
+    case "asian":
+      game.default = 10;
+      game.timer = game.default;
+      updatetimer(game.timer);
+      game.size = 10;
+      game.speed = 1;
+      game.max = 2;
+      game.speedRange = [20, 25];
+      game.display = [0, 100];
+      break;
+  }
+
+  fixbox();
+}
+function fixbox() {
+  //box config
+  box.style.position = "absolute";
+  box.style.border = "1px solid black";
+  box.style.width = `${game.size}px`;
+  box.style.height = `${game.size}px`;
+  box.style.top = `${game.posY}px`;
+  box.style.left = `${game.posX}px`;
+  box.style.backgroundColor = "red";
+}
 
 function randNumb(min = 0, max = 256) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -139,7 +240,7 @@ function updatePos() {
   box.style.top = `${game.posY}px`;
   box.style.left = `${game.posX}px`;
 
-  if (randNumb(0, 40) == 10 && game.max > enemies.length) {
+  if (randNumb(...game.display) == 10 && game.max > enemies.length) {
     const newEle = maker();
   }
 
@@ -160,7 +261,10 @@ function updatePos() {
       updatescore(game.score);
     }
   });
+
   if (game.status && game.timer != 0) {
     move = window.requestAnimationFrame(updatePos);
+  } else {
+    endGame();
   }
 }
